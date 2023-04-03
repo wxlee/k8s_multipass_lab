@@ -61,15 +61,16 @@ kubectl get node
 NAME         STATUS   ROLES           AGE   VERSION
 k8s-master   Ready    control-plane   13m   v1.26.3
 
-
 # 移除master污點設置，讓pod可以派發到這個節點
 kubectl taint nodes k8s-master node-role.kubernetes.io/control-plane:NoSchedule-
 
 # 創建一個deployment nginx-app
 kubectl create deployment nginx-app --image=nginx
+
 deployment.apps/nginx-app created
 
-root@k8s-master:~# kubectl get pod,svc -o wide
+kubectl get pod,svc -o wide
+
 NAME                            READY   STATUS    RESTARTS   AGE   IP             NODE         NOMINATED NODE   READINESS GATES
 pod/nginx-app-5d47bf8b9-fp9lc   1/1     Running   0          90s   10.1.235.199   k8s-master   <none>           <none>
 
@@ -77,7 +78,8 @@ NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE   SELE
 service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   16m   <none>
 
 # 測試訪問該pod，可正常訪問nginx
-root@k8s-master:~# curl -I 10.1.235.199
+curl -I 10.1.235.199
+
 HTTP/1.1 200 OK
 Server: nginx/1.23.4
 Date: Mon, 03 Apr 2023 10:52:00 GMT
