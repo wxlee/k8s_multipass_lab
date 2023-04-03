@@ -1,7 +1,7 @@
 # 使用Multipass與Cloud-init快速創建Kubernetes Lab環境
 
 Env: 
-- macOS 10.15.7 (Intel CPU)
+- macOS 10.15.7 (僅在Intel CPU測試過)
 - VM: Ubuntu 22.04
 - K8s: 1.26.3
 - Calico: 3.25.1
