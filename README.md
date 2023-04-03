@@ -1,10 +1,20 @@
 # 使用Multipass與Cloud-init快速創建Kubernetes Lab環境
 
-Env: macOS 10.15.7 (Intel CPU)
+Env: 
+- macOS 10.15.7 (Intel CPU)
+- VM: Ubuntu 22.04
+- K8s: 1.26.3
+- Calico: 3.25.1
+- Docker: 23.0.2
+- cri-dockerd: 0.3.1
+
 
 ```bash
 # macOS安裝multipass
 brew install multipass
+
+# 下載cloud-init yaml
+wget https://raw.githubusercontent.com/wxlee/k8s_multipass_lab/main/master-cloud-init.yaml
 
 # 使用cloud-init進行基本設置，使用docker, cri-dockerd, containerd
 multipass launch 22.04 -n k8s-master --cloud-init master-cloud-init.yaml -c 2 -m 4G --disk 20G
@@ -90,3 +100,5 @@ multipass purge
 [Calico](https://docs.tigera.io/calico/latest/getting-started/kubernetes/quickstart#operator-based-installation)
 
 [ngaffa/cloud-init.yaml](https://gist.github.com/ngaffa/15d46c98dd82620c8120ddf7398d6dbd)
+
+[Updated: Dockershim Removal FAQ](https://kubernetes.io/blog/2022/02/17/dockershim-faq/)
