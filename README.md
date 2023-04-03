@@ -23,6 +23,9 @@ multipass launch 22.04 -n k8s-master --cloud-init master-cloud-init.yaml -c 2 -m
 #   登入VM k8s-master
 multipass shell k8s-master
 
+# [ubuntu] 切換root角色進行後續動作
+sudo su - root
+
 # [ubuntu] k8s-master中，查看cloud-init日誌
 tail -f /var/log/cloud-init-output.log
 
