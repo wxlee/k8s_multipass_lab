@@ -108,6 +108,20 @@ multipass delete k8s-master
 multipass purge
 ```
 
+# 新增k8s指令補全與色彩
+```bash
+kubectl completion bash > ~/.kube/k8s_bash_completion.sh
+echo -e "\n#kubectl shell completion\nsource '$HOME/.kube/k8s_bash_completion.sh'\n" >> $HOME/.bash_profile
+echo -e "source '/root/.bashrc'" >> $HOME/.bash_profile
+source $HOME/.bash_profile
+wget https://github.com/hidetatz/kubecolor/releases/download/v0.0.25/kubecolor_0.0.25_Linux_x86_64.tar.gz
+tar zxf kubecolor_0.0.25_Linux_x86_64.tar.gz
+echo "alias kubectl='/root/kubecolor'" >> ~/.bashrc
+. ~/.bashrc
+complete -o default -F __start_kubectl kubecolor
+```
+
+
 # 參考資料
 
 [Multipass + Kubernetes + Calico](https://medium.com/@ypelud/multipass-kubernetes-calico-30366d293162)
