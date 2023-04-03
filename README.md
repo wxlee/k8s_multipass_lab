@@ -10,23 +10,33 @@ Env:
 
 
 ```bash
-# macOS安裝multipass
+# [mac] macOS安裝multipass
 brew install multipass
 
-# 下載cloud-init yaml
+# [mac] 下載cloud-init yaml
 wget https://raw.githubusercontent.com/wxlee/k8s_multipass_lab/main/master-cloud-init.yaml
 
-# 使用cloud-init進行基本設置，使用docker, cri-dockerd, containerd
+# [mac] 使用cloud-init進行基本設置，使用docker, cri-dockerd, containerd
 multipass launch 22.04 -n k8s-master --cloud-init master-cloud-init.yaml -c 2 -m 4G --disk 20G
 
-# 安裝完畢進行初始化
+# [mac] multipass執行過程，可以透過shell環境去觀察cloud-init執行狀況
+#   登入VM k8s-master
+multipass shell k8s-master
+
+# [ubuntu] k8s-master中，查看cloud-init日誌
+tail -f /var/log/cloud-init-output.log
+
+# 出現類似下述內容表示cloud init完成
+Cloud-init v. 22.4.2-0ubuntu0~22.04.1 finished at Mon, 03 Apr 2023 10:31:41 +0000. Datasource DataSourceNoCloud [seed=/dev/sr0][dsmode=net].  Up 240.79 seconds
+
+# [ubuntu] 安裝完畢進行初始化
 kubeadm init --pod-network-cidr=10.1.0.0/16 --cri-socket unix:///var/run/cri-dockerd.sock
 
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-# 安裝calico
+# [ubuntu] 安裝calico
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/tigera-operator.yaml
 
 kubectl create -f- <<EOF
@@ -52,19 +62,19 @@ metadata:
 spec: {}
 EOF
 
-# 查看calico pod初始化狀態，完成後STATUS都會出現Running
+# [ubuntu] 查看calico pod初始化狀態，完成後STATUS都會出現Running
 watch kubectl get pods -n calico-system
 
-# 查看node狀態，應為Ready
+# [ubuntu] 查看node狀態，應為Ready
 kubectl get node
 
 NAME         STATUS   ROLES           AGE   VERSION
 k8s-master   Ready    control-plane   13m   v1.26.3
 
-# 移除master污點設置，讓pod可以派發到這個節點
+# [ubuntu] 移除master污點設置，讓pod可以派發到這個節點
 kubectl taint nodes k8s-master node-role.kubernetes.io/control-plane:NoSchedule-
 
-# 創建一個deployment nginx-app
+# [ubuntu] 創建一個deployment nginx-app
 kubectl create deployment nginx-app --image=nginx
 
 deployment.apps/nginx-app created
@@ -77,7 +87,7 @@ pod/nginx-app-5d47bf8b9-fp9lc   1/1     Running   0          90s   10.1.235.199 
 NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE   SELECTOR
 service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   16m   <none>
 
-# 測試訪問該pod，可正常訪問nginx
+# [ubuntu] 測試訪問該pod，可正常訪問nginx
 curl -I 10.1.235.199
 
 HTTP/1.1 200 OK
@@ -90,7 +100,7 @@ Connection: keep-alive
 ETag: "64230162-267"
 Accept-Ranges: bytes
 
-# 清除VM
+# [mac] 清除VM
 multipass delete k8s-master
 multipass purge
 ```
