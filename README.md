@@ -87,4 +87,6 @@ multipass purge
 
 [Multipass + Kubernetes + Calico](https://medium.com/@ypelud/multipass-kubernetes-calico-30366d293162)
 
+[Calico](https://docs.tigera.io/calico/latest/getting-started/kubernetes/quickstart#operator-based-installation)
 
+[ngaffa/cloud-init.yaml](https://gist.github.com/ngaffa/15d46c98dd82620c8120ddf7398d6dbd)
